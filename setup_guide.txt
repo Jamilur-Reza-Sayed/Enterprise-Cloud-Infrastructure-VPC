@@ -1,0 +1,24 @@
+DEPLOYMENT GUIDE (CONSOLE MANUAL)
+PHASE 1: NETWORKING
+1. Create VPC "Enterprise-Core" with CIDR 10.0.0.0/16.
+2. Create 3 Subnets (Public, App-Private, DB-Private) as per network_specs.md.
+3. Create an Internet Gateway (IGW) and attach it to the VPC.
+4. Update Public Route Table: Add route 0.0.0.0/0 pointing to the IGW.
+PHASE 2: SECURITY
+1. Create 3 Security Groups: SG_LB, SG_APP, SG_DB.
+2. Configure Inbound/Outbound rules as specified in network_specs.md.
+NOTE: Ensure the DB SG only references the App SG ID, not an IP range.
+PHASE 3: COMPUTE & LOAD BALANCING
+1. Provision 2 Elastic Cloud Servers (ECS) in the App-Private subnet.
+2. Install Nginx/Web Server and verify internal connectivity.
+3. Create an Elastic Load Balancer (ELB).
+4. Assign an Elastic IP (EIP) to the ELB.
+5. Create a Target Group and add the 2 ECS instances.
+PHASE 4: DATABASE
+1. Provision a Relational Database (RDS) in the DB-Private subnet.
+2. Ensure the "Public Access" toggle is set to OFF.
+3. Apply the SG_DB security group.
+PHASE 5: VALIDATION
+1. Access the ELB Public IP via browser (Port 443).
+2. Verify that the App Server can successfully query the Database via Private IP.
+3. Attempt to SSH into the Database from a local machine (Should FAIL - success!).
